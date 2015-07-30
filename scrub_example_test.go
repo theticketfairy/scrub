@@ -50,6 +50,7 @@ func (c *Company) Form() Form {
 		}
 		return cast
 	})
+
 	return Form{name, est, president, employees}
 }
 

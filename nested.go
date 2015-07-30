@@ -38,19 +38,18 @@ func (f *NestedField) Custom(t func(val Validated) bool) {
 	})
 }
 
-// Validate iterates (1) over the field's checks and returns the first
-// validation error it encounters, then (2) validates the nested fields
-// building and returning  multi-field error if any errors were found otherwise
-// returns nil
+// Validate iterates (1) validates the nested fields, then (2) over the
+// field's checks and returns the first validation error it encounters if any
+// were found otherwise returns nil
 func (f *NestedField) Validate() (err *FieldError) {
-	for i := 0; i < len(f.Checks) && err == nil; i++ {
-		err = f.Checks[i]()
+	if errs := Validate(f.Value); len(errs) > 0 {
+		err = NewMultiFieldError(f.Name, errs)
 	}
 	if err != nil {
 		return
 	}
-	if errs := Validate(f.Value); len(errs) > 0 {
-		err = NewMultiFieldError(f.Name, errs)
+	for i := 0; i < len(f.Checks) && err == nil; i++ {
+		err = f.Checks[i]()
 	}
 	return
 }

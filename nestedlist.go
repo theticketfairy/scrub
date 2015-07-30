@@ -43,19 +43,19 @@ func (f *NestedListField) validateAll() FieldErrors {
 	return nil
 }
 
-// Validate iterates (1) over the field's checks and returns the first
-// validation error it encounters, then (2) over the list of fields' invoking
-// validation on them in the same way as a NestedField
+// Validate iterates (1) over the list of fields' invoking validation on them
+// in the same way as a NestedField, then (2) over the field itself running
+// any checks and returning the first validation error it encounters
 func (f *NestedListField) Validate() (err *FieldError) {
-	for i := 0; i < len(f.Checks) && err == nil; i++ {
-		err = f.Checks[i]()
+	errs := f.validateAll()
+	if len(errs) > 0 {
+		err = NewMultiFieldError(f.Name, errs)
 	}
 	if err != nil {
 		return
 	}
-	errs := f.validateAll()
-	if len(errs) > 0 {
-		err = NewMultiFieldError(f.Name, errs)
+	for i := 0; i < len(f.Checks) && err == nil; i++ {
+		err = f.Checks[i]()
 	}
 	return
 }
