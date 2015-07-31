@@ -22,7 +22,7 @@ func (f *StringField) check(c Check) {
 	f.Checks = append(f.Checks, c)
 }
 
-// Required adds a check for field value not being an empty string
+// Required adds a check for field value being an empty string
 func (f *StringField) Required() {
 	f.check(func() (err *FieldError) {
 		if strings.TrimSpace(f.Value) == "" {
@@ -32,7 +32,7 @@ func (f *StringField) Required() {
 	})
 }
 
-// Matches adds a check for field value not matching a regular expression
+// Matches adds a check for field value matching a regular expression
 func (f *StringField) Matches(re *regexp.Regexp) {
 	msg := "The value of this field is invalid"
 	f.check(func() (err *FieldError) {
@@ -43,7 +43,7 @@ func (f *StringField) Matches(re *regexp.Regexp) {
 	})
 }
 
-// MinLength adds a check for field value not being less than a specified
+// MinLength adds a check for field value being less than a specified
 // character length
 func (f *StringField) MinLength(min int) {
 	msg := fmt.Sprintf("The value must be at least %d characters long", min)
@@ -55,7 +55,7 @@ func (f *StringField) MinLength(min int) {
 	})
 }
 
-// MaxLength adds a check for field value not being more than a specified
+// MaxLength adds a check for field value being more than a specified
 // character length
 func (f *StringField) MaxLength(max int) {
 	msg := fmt.Sprintf("The value must be at most %d characters long", max)

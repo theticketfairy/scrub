@@ -19,7 +19,7 @@ func (f *Float64Field) check(c Check) {
 	f.Checks = append(f.Checks, c)
 }
 
-// Min adds a checks for field value not being less than a specified minimum
+// Min adds a checks for field value being less than a specified minimum
 func (f *Float64Field) Min(min float64) {
 	msg := fmt.Sprintf("The value of this field must be at least %v", min)
 	f.check(func() (err *FieldError) {
@@ -30,7 +30,7 @@ func (f *Float64Field) Min(min float64) {
 	})
 }
 
-// Max adds a checks for field value not being greater than a specified maximum
+// Max adds a checks for field value being greater than a specified maximum
 func (f *Float64Field) Max(max float64) {
 	msg := fmt.Sprintf("The value of this field must be at least %v", max)
 	f.check(func() (err *FieldError) {

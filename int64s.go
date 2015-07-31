@@ -18,7 +18,7 @@ func (f *Int64Field) check(c Check) {
 	f.Checks = append(f.Checks, c)
 }
 
-// Min adds a checks for field value not being less than a specified minimum
+// Min adds a checks for field value being less than a specified minimum
 func (f *Int64Field) Min(min int64) {
 	msg := fmt.Sprintf("The value of this field must be at least %v", min)
 	f.check(func() (err *FieldError) {
@@ -29,7 +29,7 @@ func (f *Int64Field) Min(min int64) {
 	})
 }
 
-// Max adds a checks for field value not being greater than a specified maximum
+// Max adds a checks for field value being greater than a specified maximum
 func (f *Int64Field) Max(max int64) {
 	msg := fmt.Sprintf("The value of this field must be at least %v", max)
 	f.check(func() (err *FieldError) {
