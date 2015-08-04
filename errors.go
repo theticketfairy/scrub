@@ -20,12 +20,16 @@ const (
 	CUSTOM                   = "custom"
 )
 
+type FieldErrorMeta struct {
+	Fields FieldErrors `json:"fields"`
+}
+
 // FieldError is used to capture field validation failure information
 type FieldError struct {
-	Code   FieldErrorCode `json:"code"`
-	Key    string         `json:"key"`
-	Detail string         `json:"detail,omitempty"`
-	Meta   FieldErrors    `json:"meta,omitempty"`
+	Code   FieldErrorCode  `json:"code"`
+	Key    string          `json:"key"`
+	Detail string          `json:"detail,omitempty"`
+	Meta   *FieldErrorMeta `json:"meta,omitempty"`
 }
 
 // NewFieldError creates a FieldError for fields
@@ -36,7 +40,7 @@ func NewFieldError(code FieldErrorCode, key, detail string) *FieldError {
 // NewMultiFieldError creates a FieldError for fields that embed other fields
 // such as struct, map and slice fields
 func NewMultiFieldError(key string, errs FieldErrors) *FieldError {
-	return &FieldError{Key: key, Code: MULTI, Meta: errs}
+	return &FieldError{Key: key, Code: MULTI, Meta: &FieldErrorMeta{errs}}
 }
 
 func (ve *FieldError) Error() string {
@@ -61,9 +65,11 @@ func (fe FieldErrors) Error() string {
 func describe(fe *FieldError, level int) []string {
 	var out []string
 	out = append(out, "* "+strings.Repeat("  ", level)+fe.Error())
-	for _, e := range fe.Meta {
-		n := describe(e, level+1)
-		out = append(out, n...)
+	if meta := fe.Meta; meta != nil {
+		for _, e := range fe.Meta.Fields {
+			n := describe(e, level+1)
+			out = append(out, n...)
+		}
 	}
 	return out
 }
